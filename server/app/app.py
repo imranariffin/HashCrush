@@ -17,6 +17,10 @@ def static(filepath):
 def bower_files(filepath):
     return static_file(filepath, root='bower_components')
 
+@get('/get-friends')
+def get_friends():
+	return "calls facebook API and returns list of friends in JSON"
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 1337))
     run(host='0.0.0.0', port=port, debug=True, reloader=True)
