@@ -19,7 +19,7 @@
 
     <div class="container">
         <div class="jumbotron">
-        <form action="/get-hashcrush" method="POST">
+        <form action="/hashcrushtable" method="POST">
           <input type="text" style="width:50%" placeholder="put your tweets here" name="tweet">
           <p>
             <input type="submit" value="Hash Crush" id="MyButton">
