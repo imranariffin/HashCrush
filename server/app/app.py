@@ -44,7 +44,7 @@ def tweets():
 	return json.dumps(ret)
 
 @get('/hashcrush')
-def suggest():
+def __suggest():
 	return template('hashcrush')
 
 def get_related_tweets(tweet_key_words):
