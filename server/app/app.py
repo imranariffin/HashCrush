@@ -1,7 +1,5 @@
 import os
 from bottle import *
-import facebook
-from facepy import GraphAPI
 import json
 
 global accessToken
@@ -77,6 +75,10 @@ def find_hashtags(tweet_text):
 def hashtag_count(tweet_key_words):
 	hashtag_count = dict()
 	related_tweets = get_related_tweets(tweet_key_words)
+
+	for i in range(3):
+		related_tweets.extend(get_related_tweets(tweet_key_words))
+
 	for tweet in related_tweets:
 		ret = tweet.text
 		for hashtag in find_hashtags(tweet.text):
@@ -85,17 +87,13 @@ def hashtag_count(tweet_key_words):
 				hashtag_count[hashtag] = 1
 			else:
 				hashtag_count[hashtag] += 1
-		print ret
+		# print ret
 	return hashtag_count
 
 def suggest(tweet_key_words):
 	import operator
 	h_count = hashtag_count(tweet_key_words)
 	print h_count
-	# top_hashtag = (None, 0)
-	# for hashtag in h_count:
-	# 	if h_count[hashtag] > top_hashtag[1]:
-	# 		top_hashtag = (hashtag, h_count[hashtag])
 
 	ret = map(lambda e:{e[0] : e[1]}, sorted(h_count.items(), key=operator.itemgetter(1), reverse=True))
 	return ret[:10]
@@ -128,18 +126,18 @@ def get_friends():
 def fb_try():
 	return template('fb-test')
 
-@get('/sendAccessToken')
-def get_access_token():
-	print request.GET['accessToken']
-	accessToken = request.GET['accessToken']
+# @get('/sendAccessToken')
+# def get_access_token():
+# 	print request.GET['accessToken']
+# 	accessToken = request.GET['accessToken']
 	
-	# graph = facebook.GraphAPI(accessToken)	
-	graph = GraphAPI(accessToken)
-	# profile = graph.get_object("me", fields=['posts', 'context'])
-	# friends = graph.get_connections("me", "friends")
+# 	# graph = facebook.GraphAPI(accessToken)	
+# 	graph = GraphAPI(accessToken)
+# 	# profile = graph.get_object("me", fields=['posts', 'context'])
+# 	# friends = graph.get_connections("me", "friends")
 
-	return graph.get('me/posts', retry=10)
-	# return graph.get('me/')
+# 	return graph.get('me/posts', retry=10)
+# 	# return graph.get('me/')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 1337))
