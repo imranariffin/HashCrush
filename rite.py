@@ -14,23 +14,28 @@ ot = "6275a82db921ef425965fda6f88468ee056c942d8"
 os = "939bada22f32e4079893d390a6eb59b6"
 
 # A list of trending hashtags
-filename = "hashtags.csv"
 hashtags = ["toyota" ]
-with open(filename, "w+") as myfile:
-    wr = csv.writer(myfile)
+
+def lulz():
+    ret = []
     for i in hashtags:
         url = "https://ritetag.com/api/v2/historical-data/"+i
         auth = OAuth1Session(client_key = ck, client_secret =  cs, resource_owner_key = ot,resource_owner_secret = os)
         r = auth.get(url).json()["data"]
         headers = ["date", "density", "mentions", "retweets", "unique", "color"]
-        wr.writerow(headers)
+        # wr.writerow(headers)
         for oneDayStat in r:
             row = []
             for temp in range(0,len(headers)):
                 row = row + [oneDayStat[headers[temp]]]
-            wr.writerow(row)
-    print ("Twitter data for " + i + " has been downloaded to " + filename + ".")
+            print row
+            ret.append(row)
+    return ret
+    print ("Done")
 
+
+if __name__=="__main__":
+    lulz()
 
 #print "data:\n"+json.dumps(r.json(), indent=4, sort_keys=True)
 #0: white (underused)
