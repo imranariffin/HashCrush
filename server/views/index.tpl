@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-</head>
-<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +8,7 @@
     <meta name="author" content="">
 
     <title>backend</title>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -38,7 +35,7 @@
 </script>
 
 <script>
-  var accesstoken;
+  var accessToken;
   
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -50,9 +47,25 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      accesstoken = response.authResponse.accessToken;
+      accessToken = response.authResponse.accessToken;
       testAPI();
       fbresponse = response;
+      console.log("logged in");
+      $.ajax({
+        url : '/sendAccessToken',
+        type : 'GET',
+        data : {
+            accessToken : accessToken
+        },
+        success : function (response) {
+            console.log("ajax success");
+            console.log(response);
+        },
+        error : function (err) {
+            console.log("ajax err");
+            console.log(err);
+        }
+      })
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +

@@ -1,5 +1,8 @@
 import os
 from bottle import *
+import facebook
+
+global accessToken
 
 @route('/')
 def index(section='home'):
@@ -20,6 +23,22 @@ def bower_files(filepath):
 @get('/get-friends')
 def get_friends():
 	return "calls facebook API and returns list of friends in JSON"
+
+@get('/fb-try')
+def fb_try():
+	return template('fb-test')
+
+@get('/sendAccessToken')
+def get_access_token():
+	print request.GET['accessToken']
+	accessToken = request.GET['accessToken']
+	
+	graph = facebook.GraphAPI(accessToken)	
+	profile = graph.get_object("me", fields=['context'])
+	friends = graph.get_connections("me", "friends")
+
+	return profile
+	# return friends
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 1337))
