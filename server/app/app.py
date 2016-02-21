@@ -94,7 +94,8 @@ def suggest(tweet_key_words):
 	h_count = hashtag_count(tweet_key_words)
 	print h_count
 
-	ret = map(lambda e:{e[0] : e[1]}, sorted(h_count.items(), key=operator.itemgetter(1), reverse=True))
+	# ret = map(lambda e:{e[0] : e[1]}, sorted(h_count.items(), key=operator.itemgetter(1), reverse=True))
+	ret = map(lambda e:e[0], sorted(h_count.items(), key=operator.itemgetter(1), reverse=True))
 	return ret[:10]
 
 @post('/get-hashcrush')
@@ -102,6 +103,7 @@ def get_hashcrush():
 	key_words = request.POST.get('tweet').split(" ")
 	related_tweets = get_related_tweets(key_words)
 	# print hashtag_count(key_words)
+	# print suggest(ke)
 	return json.dumps(suggest(key_words))
 
 @error(404)
@@ -130,8 +132,8 @@ def printout1():
         related_tweets = get_related_tweets(key_words)
         print hashtag_count(key_words)
         # return jsonify_tweets(related_tweets)
-	basket=suggest(key_words)
-	return template('hashcrushtable', basket=basket)
+	hashtags=suggest(key_words)
+	return template('hashcrushtable', hashtags=hashtags)
 
 @get('/hashcrushtable')
 def lul():
