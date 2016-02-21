@@ -88,9 +88,9 @@ def getPrediction(riteTagData):
 
 def start (listOfHashtags):
     hashtags = listOfHashtags
-    print(hashtags)
+    print("List of #: ", hashtags)
     for i in hashtags:
         getRiteTagData(i)
+    return useBool
 
-start (sys.argv[1:])
-useBool
+start(sys.argv[1:])
