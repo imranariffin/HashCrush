@@ -12,7 +12,6 @@
 
     <title>backend</title>
 
-    <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -131,26 +130,15 @@
 <body>
 
     <div class="container">
-        <div class="header">
-            <ul class="nav nav-pills pull-right">
-                <li class="active"><a ng-href="#">Home</a></li>
-                <li><a ng-href="#">About</a></li>
-                <li><a ng-href="#">Contact</a></li>
-            </ul>
-            <h3 class="text-muted">backend</h3>
-        </div>
 
         <div class="jumbotron">
-            <h1>'Allo, 'Allo!</h1>
-            <p class="lead">
-                <img src="static/img/yeoman.png" alt="I'm Yeoman"><br>
-                Always a pleasure scaffolding your apps.
-            </p>
-          
-            <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+          <p>
+			<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
             </fb:login-button>
-          
 			<input type="button" value="Show my user id" id="MyButton" onclick = "ShowUserID();">
+            
+          </p>
+
             <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
         </div>
     </div>
