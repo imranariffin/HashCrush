@@ -1,8 +1,17 @@
 import os
 from bottle import *
 import json
+from pymongo import MongoClient
+import datetime
+
+client = MongoClient()
+db = client.db
+db_related_tweets = db.db_related_tweets
+
 
 global accessToken
+
+# import 
 
 
 # twitter
@@ -25,7 +34,7 @@ def index(section='home'):
 
 @route('/tweets')
 def tweets():
-	tweets = twitter.GetSearch(term='bern')
+	tweets = twitter.GetSearch(term=' !!happybirthday')
 	ret = []
 	for tweet in tweets:
 		print tweet
@@ -41,7 +50,19 @@ def suggest():
 def get_related_tweets(tweet_key_words):
 	related_tweets = []
 	for key_word in tweet_key_words:
-		tweets = twitter.GetSearch(term=key_word, count=100)
+		tweets = db_related_tweets.find_one({'key_word' : key_word})
+		if tweets==None:
+			print "None"
+			tweets = twitter.GetSearch(term=key_word, count=100)
+			db_related_tweets.insert({'key_word' : key_word, 'tweets' : map(lambda tw: tw.text, tweets), 'date' : datetime.datetime.utcnow()})
+		elif (datetime.datetime.utcnow() - tweets['date']).seconds > 600:
+			print "more than 10 minutes"
+			db_related_tweets.delete_one({'key_word' : key_word})
+			tweets = twitter.GetSearch(term=key_word, count=100)
+			db_related_tweets.insert({'key_word' : key_word, 'tweets' : map(lambda tw: tw.text, tweets), 'date' : datetime.datetime.utcnow()})
+		else:
+			print "oredy in db"
+			tweets = tweets['tweets']
 		related_tweets.extend(tweets)
 	return related_tweets
 
@@ -57,31 +78,14 @@ def find_hashtags(tweet_text):
 			hashtags.append(hashtag.lower())
 	return hashtags
 
-
-# def get_related_hashtags(related_tweets):
-# 	related_hashtags = dict()
-# 	# for k in related_tweets.keys():
-# 	# 	tweets = related_tweets[k]
-# 	# 	# print dir(tweets[0])
-# 	# 	print tweets[0].hashtags[0].text
-# 	# 	# print tweet['hashtags']
-# 	for key_word in related_tweets.keys():
-# 		tweets = related_tweets[key_word]
-# 		for tweet in tweets:
-# 			related_hashtags[key_word] = map(lambda e: e.text, tweet.hashtags)
-# 	print related_hashtags
-# 	return related_hashtags
-
 def hashtag_count(tweet_key_words):
 	hashtag_count = dict()
 	related_tweets = get_related_tweets(tweet_key_words)
-
-	for i in range(3):
-		related_tweets.extend(get_related_tweets(tweet_key_words))
+	# related_tweets.extend(get_related_tweets(tweet_key_words))
 
 	for tweet in related_tweets:
-		ret = tweet.text
-		for hashtag in find_hashtags(tweet.text):
+		ret = tweet
+		for hashtag in find_hashtags(tweet):
 			ret += " : " + hashtag
 			if hashtag not in hashtag_count.keys():
 				hashtag_count[hashtag] = 1
@@ -102,8 +106,7 @@ def suggest(tweet_key_words):
 def get_hashcrush():
 	key_words = request.POST.get('tweet').split(" ")
 	related_tweets = get_related_tweets(key_words)
-	print hashtag_count(key_words)
-	# return jsonify_tweets(related_tweets)
+	# print hashtag_count(key_words)
 	return json.dumps(suggest(key_words))
 
 @error(404)
@@ -121,23 +124,6 @@ def bower_files(filepath):
 @get('/get-friends')
 def get_friends():
 	return "calls facebook API and returns list of friends in JSON"
-
-@get('/fb-try')
-def fb_try():
-	return template('fb-test')
-
-# @get('/sendAccessToken')
-# def get_access_token():
-# 	print request.GET['accessToken']
-# 	accessToken = request.GET['accessToken']
-	
-# 	# graph = facebook.GraphAPI(accessToken)	
-# 	graph = GraphAPI(accessToken)
-# 	# profile = graph.get_object("me", fields=['posts', 'context'])
-# 	# friends = graph.get_connections("me", "friends")
-
-# 	return graph.get('me/posts', retry=10)
-# 	# return graph.get('me/')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 1337))
