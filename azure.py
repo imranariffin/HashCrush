@@ -86,11 +86,10 @@ def getPrediction(riteTagData):
         print(error.info())
         print(json.loads(error.read()))
 
+#usage: start(listOfHashtags) -> array of bool in the same order
 def start (listOfHashtags):
     hashtags = listOfHashtags
     print("List of #: ", hashtags)
     for i in hashtags:
         getRiteTagData(i)
     return useBool
-
-start(sys.argv[1:])
