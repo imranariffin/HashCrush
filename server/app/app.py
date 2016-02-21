@@ -15,10 +15,10 @@ global accessToken
 
 
 # twitter
-consumer_key = 'jkuNrhub84lFRNXprdX331fAS'
-consumer_secret = 'SySywKAOVh69twG7h2tC8UHfJ2yfpeKcWo9P2v3UALFL396Jo3'
-access_token_key = '3735603675-5SDWMBtQkrH5gyX1cDT9QKKc0IBHUsEbSlRndcw'
-access_token_secret = 'nXncRLX1CYBCT8j8qHju2Y24TnDS6gz4HHNrI4d9tVBSl'
+consumer_key = 'v4QtNvlKHrJLq6xfu3yHUAUb4'
+consumer_secret = 's0jZ6OA8UGoM7Nmiy1NFiIMWYZo2IMveJVVkKnitExSlWco56h'
+access_token_key = '2361833802-YeVtFwL6i24UARsmnsSuGlVEmXZMF8MM9TBENn2'
+access_token_secret = 'WmpvT8eMaV5vJ49DBA6QRNYRm72mf4RCbfxjGiJQt898F'
 
 import twitter as t
 twitter = t.Api(
@@ -124,6 +124,37 @@ def bower_files(filepath):
 @get('/get-friends')
 def get_friends():
 	return "calls facebook API and returns list of friends in JSON"
+
+@get('/fb-try')
+def fb_try():
+	return template('fb-test')
+
+@post('/hashcrushtable')
+def printout1():
+	key_words = request.POST.get('tweet').split(" ")
+        related_tweets = get_related_tweets(key_words)
+        print hashtag_count(key_words)
+        # return jsonify_tweets(related_tweets)
+	basket=suggest(key_words)
+	return template('hashcrushtable', basket=basket)
+
+@get('/hashcrushtable')
+def lul():
+	return template('hashcrushtable', basket=[])
+
+
+# @get('/sendAccessToken')
+# def get_access_token():
+# 	print request.GET['accessToken']
+# 	accessToken = request.GET['accessToken']
+	
+# 	# graph = facebook.GraphAPI(accessToken)	
+# 	graph = GraphAPI(accessToken)
+# 	# profile = graph.get_object("me", fields=['posts', 'context'])
+# 	# friends = graph.get_connections("me", "friends")
+
+# 	return graph.get('me/posts', retry=10)
+# 	# return graph.get('me/')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 1337))
