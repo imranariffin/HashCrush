@@ -1,1 +1,1 @@
-# FaceCrush
+# HashCrush
